@@ -1,42 +1,17 @@
 require('./config/config');
+const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/user', (req, res) => {
-    res.json('get user');
-});
-
-app.post('/user', (req, res) => {
-    const { name, age, email } = req.body;
-    if(!name) {
-        res.status(400).json({ 
-            ok: false, 
-            msg: 'El nombre es necesario'
-        });
-    };
-    res.json({ 
-        user: {
-            name,
-            age,
-            email
-        }
-    });
-});
-
-app.put('/user/:id', (req, res) => {
-
-    const { id } = req.params;
-
-    res.json({
-        id
-    });
-});
-
-app.delete('/user', (req, res) => {
-    res.json('delete user');
+app.use(require('./routes/user'));
+console.log('urlbd', process.env.URL_DB);
+mongoose.connect(process.env.URL_DB, 
+    { useNewUrlParser: true, useCreateIndex: true }, (err, res) => {
+    if(err) throw err;
+    console.log('Database is online');
 });
 
 
